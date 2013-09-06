@@ -1,16 +1,17 @@
-CXXFLAGS = -Wall -O3 -g -I..
-LDFLAGS =
-LIBS =
-TARGET = demo
+CXXFLAGS = -fPIC -Wall -O3 -g
+TARGET_LIB = libhttprequest.a
 
-SRCS = Demo.cpp HttpRequest.cpp HttpResponse.cpp HttpException.cpp
+SRCS = HttpRequest.cpp HttpResponse.cpp HttpException.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 
-all: $(TARGET)
+all: $(TARGET_LIB)
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(TARGET) $(OBJS) $(LDFLAGS) $(LIBS)
+$(TARGET_LIB): $(OBJS)
+	ar -rs $@ $^
+
+$(SRCS:.cpp=.d):%.d:%.cpp 
+	$(CXX) $(CXXFLAGS) -MM $< >$@@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(OBJS) $(TARGET_LIB) $(SRCS:.cpp=.d)
